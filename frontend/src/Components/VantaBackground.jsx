@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import RINGS from "vanta/dist/vanta.rings.min";
-import "../Style/VantaBackground.css";
+import "../style/VantaBackground.css";
 
 const VantaBackground = ({ children, className = "", options = {} }) => {
   const vantaRef = useRef(null);
