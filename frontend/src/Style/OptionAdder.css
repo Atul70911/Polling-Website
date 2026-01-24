@@ -1,0 +1,86 @@
+.optionAdder{
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  gap: 10px;
+  align-items: center;
+}
+
+.optionAdder__iconBtn{
+  height: 40px;
+  width: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color:black;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.optionAdder__iconBtn:hover{
+  background: rgba(203, 16, 16, 0.512);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.optionAdder__textInput{
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: white;
+  color: black;
+  border-radius: 12px;
+  padding: 11px 12px;
+  outline: none;
+}
+
+.optionAdder__textInput:focus{
+  border-color: rgba(99,102,241,0.7);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.22);
+}
+
+.optionAdder__file{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.optionAdder__fileInput{
+  /* hide the real input */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+ 
+}
+
+.optionAdder__fileLabel{
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(7, 7, 8, 0.667);
+  color: rgb(214, 206, 206);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  
+}
+
+.optionAdder__fileLabel:hover{
+  background: rgba(215, 47, 47, 0.834);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.optionAdder__preview{
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+@media (max-width: 560px){
+  .optionAdder{
+    grid-template-columns: 40px 1fr 40px;
+  }
+}

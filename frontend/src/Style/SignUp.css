@@ -1,0 +1,250 @@
+:root{
+  --card: rgba(255, 255, 255, 0.08);
+  --cardBorder: rgba(255, 255, 255, 0.14);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.68);
+  --btn: #6366f1;
+  --btnHover: #4f46e5;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+}
+
+* { box-sizing: border-box; }
+
+.signup{
+  min-height: 100vh;
+  width: 100vw;
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.signup__container{
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.signup__brand{
+  position: absolute;
+  top: 28px;
+  left: 28px;
+}
+
+.signup__title{
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 0.2px;
+}
+
+.signup__card{
+  width: min(560px, 100%);
+  background: var(--card);
+  border: 1px solid var(--cardBorder);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 28px;
+  backdrop-filter: blur(10px);
+}
+
+.signup__header{
+  margin-bottom: 16px;
+}
+
+.signup__heading{
+  margin: 0 0 6px 0;
+  font-size: 24px;
+  font-weight: 780;
+}
+
+.signup__subheading{
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.signup__form{
+  margin-top: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.signup__grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.signup__field{
+  display: grid;
+  gap: 8px;
+}
+
+.signup__field--full{
+  grid-column: 1 / -1;
+}
+
+.signup__label{
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.signup__input{
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.22);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 12px 12px;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.signup__input::placeholder{
+  color: rgba(255,255,255,0.45);
+}
+
+.signup__input:focus{
+  border-color: rgba(99,102,241,0.7);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.22);
+  background: rgba(0,0,0,0.28);
+}
+
+/* Password with eye button */
+.signup__password{
+  position: relative;
+}
+
+.signup__input--password{
+  padding-right: 44px;
+}
+
+.signup__iconBtn{
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 34px;
+  width: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.signup__iconBtn:hover{
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.signup__submit{
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: var(--btn);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 160ms ease, transform 120ms ease;
+}
+
+.signup__submit:hover{ background: var(--btnHover); }
+.signup__submit:active{ transform: scale(0.99); }
+
+.signup__footer{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.signup__linkBtn{
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.92);
+  font-weight: 800;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.signup__linkBtn:hover{
+  background: rgba(255,255,255,0.06);
+}
+
+/* Mobile */
+@media (max-width: 560px){
+  .signup__brand{ left: 18px; top: 18px; }
+  .signup__card{ padding: 20px; border-radius: 16px; }
+  .signup__grid{ grid-template-columns: 1fr; }
+}
+/* Reusable visually-hidden (accessible) */
+.visually-hidden{
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+/* Avatar uploader */
+.profileUpload{
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+}
+
+.profileUpload__avatarWrap{
+  position: relative;
+  width: 96px;
+  height: 96px;
+}
+
+.profileUpload__preview{
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+}
+
+/* The edit (pen) badge */
+.profileUpload__label{
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+
+  height: 36px;
+  width: 36px;
+  border-radius: 12px;
+
+  display: grid;
+  place-items: center;
+
+  cursor: pointer;
+  color: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+
+  transition: transform 120ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.profileUpload__label:hover{
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.26);
+  transform: translateY(-1px);
+}
+
+.profileUpload__label:active{
+  transform: translateY(0) scale(0.98);
+}

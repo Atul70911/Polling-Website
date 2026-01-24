@@ -1,0 +1,24 @@
+/* src/Components/VantaBackground.css */
+.vantaWrap {
+  min-height: 100vh;
+}
+    
+.vantaBg {
+  position: fixed;
+  inset: 0;              /* full viewport */ /* [web:363] */
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+/* Vanta injects a canvas inside this element */
+.vantaBg canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.vantaContent {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}

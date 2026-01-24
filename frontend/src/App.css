@@ -1,0 +1,50 @@
+html, body, #root { height: 100%; width: 100%; margin: 0; }
+#root { max-width: none; }
+
+
+.appLayout {
+  display: flex;
+  min-height: 100vh;
+  background: transparent; /* let Vanta show */
+  position: relative;
+  z-index: 1; /* above Vanta */
+}
+
+.authLayout {
+  min-height: 100vh;
+  width: 100%;
+  background: transparent; /* let Vanta show */
+  position: relative;
+  z-index: 1;
+}
+
+.appLayout__left {
+  width: 300px;           /* match your sidebar width */
+  flex: 0 0 auto;
+}
+
+.appLayout__middle {
+  flex: 1;                /* takes remaining space */
+  padding: 20px;
+  min-width: 0;           /* prevents overflow in flex layouts */
+}
+
+.appLayout__right {
+  width: 340px;           /* match your UserInfo card area */
+  flex: 0 0 auto;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+.appLayout__left,
+.appLayout__right {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+}
+
+/* Optional: if VantaBackground doesn't stretch full screen, this helps */
+.authLayout > * {
+  min-height: 100vh;
+}
