@@ -39,7 +39,7 @@ export function AppProvider({ children }) {
 );
 
   useEffect(() => {
-    axios.get('/')
+    axios.get('https://polling-website-28iv.onrender.com/')
     .then((response)=>{
       console.log(response);
     })
