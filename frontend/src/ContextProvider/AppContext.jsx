@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useState, useEffect } from "react";
 import profilePic from "../assets/profile-pic.jpg";
+import axios from 'axios';
 
 const AppContext = createContext(null);
 
@@ -36,6 +37,19 @@ export function AppProvider({ children }) {
     yesNoList, ratingList, singleChoiceList, imageBasedList
   ]
 );
+
+  useEffect(() => {
+    axios.get('https://polling-website-28iv.onrender.com/')
+    .then((response)=>{
+      console.log(response);
+    })
+    .catch((error)=>{
+        console.log(error)
+    })
+  
+   
+  })
+  
 
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
