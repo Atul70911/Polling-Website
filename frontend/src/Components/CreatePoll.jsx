@@ -35,9 +35,9 @@ const CreatePoll = () => {
   const handleChoiceClick = (t) => {
     setType(t);
 
-    // reset options depending on type
+    
     if (t === "SingleChoice" || t === "ImageBased") setQuesOptions([""]);
-    else setQuesOptions([""]); // keep safe default (not used for YesNo/Rating UI)
+    else setQuesOptions([""]); 
   };
 
   const handleCreate = () => {
