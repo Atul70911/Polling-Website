@@ -28,7 +28,7 @@ build/
 # OS / editor
 .DS_Store
 Thumbs.db
-.vscode/
+.vscode/   
 .idea/
 
 # Optional: uploads (only if you store local files)
