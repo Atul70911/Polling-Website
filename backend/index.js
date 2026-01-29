@@ -1,15 +1,13 @@
-const mongoose = require('mongoose');
-require('dotenv').config()
-var cors = require('cors')
+import dotenv from "dotenv";
+dotenv.config({ path: "../env" }); // or whatever your env file is
+import { app } from "./src/server.js";
+import connectDB from "./src/db/index.js";
 
-const express = require('express')
 const PORT = 3000
 
+connectDB();
 
 
-
-const app = express()
-app.use(cors())
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
