@@ -30,7 +30,7 @@ const registerUser= asyncHandler(
             throw new ApiError(409,"User Already Exists");
         }
 
-        const avatarLocalPath=res.files?.avatar[0]?.path;
+        const avatarLocalPath=req.files?.profilePicture[0]?.path;
         if(!avatarLocalPath){
             throw new ApiError(400,"Avatar is required");
         }
@@ -44,9 +44,9 @@ const registerUser= asyncHandler(
             username,
             email,
             password,
-            avatar:avatar.secure_url
+            profilePicture: avatar.secure_url
         })
-        const createdUser=await user.findById(user._id).select("-password -refreshTokens");
+        const createdUser=await User.findById(user._id).select("-password -refreshTokens");
         if(!createdUser){
             throw new ApiError(500,"User Not Created");
         }
@@ -62,8 +62,8 @@ const loginUser= asyncHandler(async(req,res)=>{
     //access and referesh token
     //send cookie
 
-    const {email,username,password}=req.body;
-    if(!email || !username){
+    const {email,password}=req.body;
+    if(!email){
         throw new ApiError(400,"All fields are required")
     }
     const user=await User.findOne({
@@ -82,7 +82,7 @@ const loginUser= asyncHandler(async(req,res)=>{
         httpOnly:true,
         secure:true
     }
-    const createdUser=await user.findById(user._id).select("-password -refreshTokens");
+    const createdUser=await User.findById(user._id).select("-password -refreshTokens");
     return res.status(200).cookie("accessToken",accessToken,options)
     .cookie("refreshToken",refreshToken,options)
     .json(
@@ -98,4 +98,27 @@ const loginUser= asyncHandler(async(req,res)=>{
 
 })
 
-export {registerUser,loginUser}
+const logoutUser=asyncHandler(async(req,res)=>{
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set:{
+                refreshToken:undefined
+            }
+        },
+        {
+            new:true
+        }
+    )
+     const options={
+        httpOnly:true,
+        secure:true
+    }
+    return res
+    .status(200)
+    .clearCookie("accessToken",options)
+    .clearCookie("refreshToken",options)
+    .json(new ApiResponse(200,{},"User Logged Out"))
+})
+
+export {registerUser,loginUser,logoutUser}
