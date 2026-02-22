@@ -1,0 +1,163 @@
+/* Base variables for easy color management */
+:root {
+  --primary-color: #4f46e5;       /* Indigo/Blue */
+  --primary-hover: #4338ca;
+  --bg-color: #f9fafb;            /* Light gray background */
+  --card-bg: #ffffff;
+  --text-main: #111827;           /* Dark gray/black */
+  --text-muted: #6b7280;          /* Medium gray */
+  --border-color: #e5e7eb;
+  --error-bg: #fef2f2;
+  --error-text: #ef4444;
+}
+
+/* Overall Layout: Sidebar left, Main right */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+/* Main Content Area */
+.dashboard__main {
+  flex: 1; /* Takes up all remaining space next to sidebar */
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 3rem;
+  overflow-y: auto; 
+}
+
+/* Header (Title + UserInfo) */
+.dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard__title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+/* Status States (Loading, Empty, Error) */
+.dashboard__loading,
+.dashboard__empty,
+.dashboard__error {
+  text-align: center;
+  padding: 3rem 1rem;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard__error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-color: #fecaca;
+}
+
+/* Polls Grid Layout */
+.dashboard__pollList {
+  display: grid;
+  /* Auto-responsive: Cards will be at least 300px wide, and stretch to fill space */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Individual Poll Card */
+.dashboard__pollCard {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard__pollCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.pollCard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.pollCard__type {
+  background-color: #e0e7ff; /* Light indigo */
+  color: var(--primary-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pollCard__author {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.pollCard__question {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 1.5rem 0;
+  line-height: 1.4;
+  flex-grow: 1; /* Pushes the button to the bottom if card heights vary */
+}
+
+/* View Poll Button */
+.pollCard__viewBtn {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.pollCard__viewBtn:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Responsive Design for Mobile Devices */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column; /* Stacks sidebar on top of main content on small screens */
+  }
+
+  .dashboard__main {
+    padding: 1.5rem 1rem;
+  }
+
+  .dashboard__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .dashboard__pollList {
+    grid-template-columns: 1fr; /* 1 column on mobile */
+  }
+}
