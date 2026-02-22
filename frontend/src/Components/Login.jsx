@@ -4,32 +4,30 @@ import "../style/Login.css";
 import { useApp } from "../ContextProvider/AppContext";
 
 const Login = () => {
-  const { setPage, email: savedEmail, password: savedPassword } = useApp();
+  const { setPage, login, loading } = useApp(); // ✅ get login() from context
 
   const [showPassword, setShowPassword] = useState(false);
 
-  // inputs typed in the login form
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault(); // avoid full page reload on form submit [web:243]
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
 
-    if (!savedEmail || !savedPassword) {
-      setError("No account found. Please SignUp first.");
-      return;
-    }
-
-    if (
-      loginEmail.trim().toLowerCase() === String(savedEmail).trim().toLowerCase() &&
-      loginPassword === String(savedPassword)
-    ) {
-      setError("");
+    try {
+      await login(loginEmail, loginPassword);   // ✅ backend call
       setPage("DashBoard");
-    } else {
-      setError("Invalid email or password.");
+    } catch (err) {
+      // axios error shape
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Login failed";
+      setError(msg);
     }
   };
 
@@ -93,8 +91,8 @@ const Login = () => {
 
             {error && <p className="login__error">{error}</p>}
 
-            <button className="login__submit" type="submit">
-              Login
+            <button className="login__submit" type="submit" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 

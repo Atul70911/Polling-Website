@@ -1,22 +1,53 @@
 import React, { useState, useEffect } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, UserRoundPen } from "lucide-react";
 import { useApp } from "../ContextProvider/AppContext";
 import "../style/SignUp.css";
 import profilePic from "../assets/profile-pic.jpg";
-import { UserRoundPen } from "lucide-react";
 
 const SignUp = () => {
-    const { setPage,src, setSrc,setName,setUserName,setEmail,setPassword } = useApp();
-  const [showPassword, setShowPassword] = useState(false);
-  
+  const { setPage, register, loading, error, setError } = useApp();
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  // local form state
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // file + preview
+  const [profilePictureFile, setProfilePictureFile] = useState(null);
+  const [previewSrc, setPreviewSrc] = useState(profilePic);
+
+  // cleanup object url
   useEffect(() => {
-  return () => {
-    if (typeof src === "string" && src.startsWith("blob:")) {
-      URL.revokeObjectURL(src);
+    return () => {
+      if (typeof previewSrc === "string" && previewSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(previewSrc);
+      }
+    };
+  }, [previewSrc]);
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError?.(""); // if you exposed setError in context
+
+    try {
+      await register({
+        name,
+        username,
+        email,
+        password,
+        profilePicture: profilePictureFile, // must be a File object
+      });
+
+      // after success, go to login
+      setPage("Login");
+    } catch (err) {
+      // context already sets error, but you can keep fallback
+      console.error(err);
     }
   };
-}, [src]);
 
   return (
     <div className="signup">
@@ -31,22 +62,18 @@ const SignUp = () => {
             <p className="signup__subheading">JOIN TO BE A CHANGE</p>
           </div>
 
-          <form className="signup__form">
+          <form className="signup__form" onSubmit={handleRegister}>
             <div className="profileUpload">
               <div className="profileUpload__avatarWrap">
-                {src && (
+                {previewSrc && (
                   <img
                     className="profileUpload__preview"
-                    src={src}
+                    src={previewSrc}
                     alt="Profile preview"
                   />
                 )}
 
-                <label
-                  htmlFor="profile-input"
-                  className="profileUpload__label"
-                  role="button"
-                >
+                <label htmlFor="profile-input" className="profileUpload__label" role="button">
                   <UserRoundPen size={18} />
                   <span className="visually-hidden">Change profile photo</span>
                 </label>
@@ -60,54 +87,55 @@ const SignUp = () => {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
-                  setSrc(URL.createObjectURL(file));
+
+                  setProfilePictureFile(file);
+                  setPreviewSrc(URL.createObjectURL(file));
                 }}
               />
             </div>
+
             <div className="signup__grid">
               <div className="signup__field">
-                <label className="signup__label" htmlFor="name" >
-                  Name
-                </label>
+                <label className="signup__label" htmlFor="name">Name</label>
                 <input
                   className="signup__input"
                   id="name"
                   type="text"
                   placeholder="Your name"
-                  onChange={(e)=>{setName(e.target.value)}}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
                 />
               </div>
 
               <div className="signup__field">
-                <label className="signup__label" htmlFor="username">
-                  Username
-                </label>
+                <label className="signup__label" htmlFor="username">Username</label>
                 <input
                   className="signup__input"
                   id="username"
                   type="text"
                   placeholder="your_username"
-                  onChange={(e)=>{setUserName(e.target.value)}}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
                 />
               </div>
 
               <div className="signup__field signup__field--full">
-                <label className="signup__label" htmlFor="email">
-                  Email
-                </label>
+                <label className="signup__label" htmlFor="email">Email</label>
                 <input
                   className="signup__input"
                   id="email"
                   type="email"
                   placeholder="gola@gmail.com"
-                  onChange={(e)=>{setEmail(e.target.value)}}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
 
               <div className="signup__field signup__field--full">
-                <label className="signup__label" htmlFor="password">
-                  Password
-                </label>
+                <label className="signup__label" htmlFor="password">Password</label>
 
                 <div className="signup__password">
                   <input
@@ -115,15 +143,15 @@ const SignUp = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    onChange={(e)=>{setPassword(e.target.value)}}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                   <button
                     className="signup__iconBtn"
                     type="button"
                     onClick={() => setShowPassword((s) => !s)}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -131,24 +159,16 @@ const SignUp = () => {
               </div>
             </div>
 
-            <button
-              className="signup__submit"
-              type="button"
-              onClick={() => {
-                setPage("DashBoard");
-              }}
-            >
-              CREATE ACCOUNT
+            {error && <p className="signup__error">{error}</p>}
+
+            <button className="signup__submit" type="submit" disabled={loading}>
+              {loading ? "Creating..." : "CREATE ACCOUNT"}
             </button>
           </form>
 
           <div className="signup__footer">
             <span className="signup__footerText">Already have an Account?</span>
-            <button
-              className="signup__linkBtn"
-              type="button"
-              onClick={() => setPage("Login")}
-            >
+            <button className="signup__linkBtn" type="button" onClick={() => setPage("Login")}>
               Login
             </button>
           </div>

@@ -3,13 +3,14 @@ import {ApiError} from "../utils/ApiError.js"
 import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshToken=async(userId)=>{
     try {
         const user=await User.findById(userId);
         const accessToken=user.generateAccessToken();
         const refreshToken=user.generateRefereshToken();
-        user.refreshTokens=refreshToken;
+        user.refreshToken=refreshToken;
         await user.save({validateBeforeSave:false});
         return {accessToken,refreshToken};
     } catch (error) {
@@ -46,7 +47,7 @@ const registerUser= asyncHandler(
             password,
             profilePicture: avatar.secure_url
         })
-        const createdUser=await User.findById(user._id).select("-password -refreshTokens");
+        const createdUser=await User.findById(user._id).select("-password -refreshToken");
         if(!createdUser){
             throw new ApiError(500,"User Not Created");
         }
@@ -82,7 +83,7 @@ const loginUser= asyncHandler(async(req,res)=>{
         httpOnly:true,
         secure:true
     }
-    const createdUser=await User.findById(user._id).select("-password -refreshTokens");
+    const createdUser=await User.findById(user._id).select("-password -refreshToken");
     return res.status(200).cookie("accessToken",accessToken,options)
     .cookie("refreshToken",refreshToken,options)
     .json(
