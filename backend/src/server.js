@@ -8,7 +8,7 @@ import pollRoutes from "./routes/poll.routes.js";
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:5173", // must be exact origin (no path)
+  origin: "https://atul70911.github.io/Polling-Website/", // must be exact origin (no path)
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
