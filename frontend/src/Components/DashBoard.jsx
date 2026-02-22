@@ -8,7 +8,6 @@ export default function Dashboard() {
   const { fetchFeed, loading, error } = useApp();
   const [polls, setPolls] = useState([]);
 
-  // Fetch the feed exactly once when the Dashboard loads
   useEffect(() => {
     const loadFeed = async () => {
       try {
@@ -20,55 +19,52 @@ export default function Dashboard() {
         console.error("Failed to load feed:", err);
       }
     };
-
     loadFeed();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className="dashboard">
-      {/* 1. Sidebar typically goes on the left */}
+    <div className="dashboard-layout">
+      {/* 1. Left Column */}
       <SideBar />
 
-      <main className="dashboard__main">
-        {/* 2. Header with title and UserInfo */}
-        <header className="dashboard__header">
-          <h1 className="dashboard__title">Dashboard</h1>
-          <UserInfo />
+      {/* 2. Middle Column (The Feed) */}
+      <main className="dashboard-main">
+        <header className="dashboard-header">
+          <h1 className="dashboard-title">Dashboard</h1>
         </header>
 
-        {/* 3. Feed Content Area */}
-        <section className="dashboard__feed">
-          {error && <p className="dashboard__error">{error}</p>}
+        <section className="dashboard-feed">
+          {error && <p className="dashboard-error">{error}</p>}
 
           {loading ? (
-            <div className="dashboard__loading">Loading polls...</div>
+            <div className="dashboard-status">Loading polls...</div>
           ) : polls.length === 0 && !error ? (
-            <div className="dashboard__empty">
+            <div className="dashboard-status dashboard-empty">
               <p>No polls available right now. Be the first to create one!</p>
             </div>
           ) : (
-            <div className="dashboard__pollList">
+            <div className="dashboard-poll-list">
               {polls.map((poll) => (
-                <div key={poll._id || poll.id} className="dashboard__pollCard">
-                  <div className="pollCard__header">
-                    <span className="pollCard__type">{poll.type}</span>
-                    {/* If you populated creator, you can show their name */}
+                <div key={poll._id || poll.id} className="dashboard-poll-card">
+                  <div className="poll-card-header">
+                    <span className="poll-card-type">{poll.type}</span>
                     {poll.creator?.name && (
-                      <span className="pollCard__author">By {poll.creator.name}</span>
+                      <span className="poll-card-author">By {poll.creator.name}</span>
                     )}
                   </div>
                   
-                  <h3 className="pollCard__question">{poll.question}</h3>
-                  
-                  {/* You can add a "Vote" button or render specific options based on poll.type here */}
-                  <button className="pollCard__viewBtn">View Poll</button>
+                  <h3 className="poll-card-question">{poll.question}</h3>
+                  <button className="poll-card-btn">View Poll</button>
                 </div>
               ))}
             </div>
           )}
         </section>
       </main>
+
+      {/* 3. Right Column */}
+      <UserInfo />
     </div>
   );
 }

@@ -1,130 +1,121 @@
-/* Base variables for easy color management */
-:root {
-  --primary-color: #4f46e5;       /* Indigo/Blue */
-  --primary-hover: #4338ca;
-  --bg-color: #f9fafb;            /* Light gray background */
-  --card-bg: #ffffff;
-  --text-main: #111827;           /* Dark gray/black */
-  --text-muted: #6b7280;          /* Medium gray */
-  --border-color: #e5e7eb;
-  --error-bg: #fef2f2;
-  --error-text: #ef4444;
-}
-
-/* Overall Layout: Sidebar left, Main right */
-.dashboard {
-  display: flex;
-  min-height: 100vh;
-  background-color: var(--bg-color);
-  font-family: "Inter", "Segoe UI", sans-serif;
-}
-
-/* Main Content Area */
-.dashboard__main {
-  flex: 1; /* Takes up all remaining space next to sidebar */
-  display: flex;
-  flex-direction: column;
-  padding: 2rem 3rem;
-  overflow-y: auto; 
-}
-
-/* Header (Title + UserInfo) */
-.dashboard__header {
+/* 3-Column Layout */
+.dashboard-layout {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 1.5rem;
+  width: 100%;
+  min-height: 100vh;
+  /* Make background transparent so your app's background image shows */
+  background: transparent; 
+  gap: 2rem;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Middle Content Area */
+.dashboard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px; /* Keeps the feed from stretching too wide */
+  margin: 0 auto;
+  color: #ffffff; /* Dark mode text */
+}
+
+/* Header */
+.dashboard-header {
   margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border-color);
+  padding-top: 1rem;
 }
 
-.dashboard__title {
-  font-size: 1.8rem;
+.dashboard-title {
+  font-size: 2.5rem;
   font-weight: 700;
-  color: var(--text-main);
+  color: #ffffff;
   margin: 0;
+  letter-spacing: 1px;
 }
 
-/* Status States (Loading, Empty, Error) */
-.dashboard__loading,
-.dashboard__empty,
-.dashboard__error {
+/* Status Cards (Loading, Empty, Error) */
+.dashboard-status {
   text-align: center;
   padding: 3rem 1rem;
-  background-color: var(--card-bg);
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
+  /* Glassmorphism effect */
+  background: rgba(255, 255, 255, 0.05); 
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #a3a3a3;
   font-size: 1.1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.dashboard__error {
-  background-color: var(--error-bg);
-  color: var(--error-text);
-  border-color: #fecaca;
+.dashboard-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-/* Polls Grid Layout */
-.dashboard__pollList {
-  display: grid;
-  /* Auto-responsive: Cards will be at least 300px wide, and stretch to fill space */
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+/* Polls List */
+.dashboard-poll-list {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
 /* Individual Poll Card */
-.dashboard__pollCard {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+.dashboard-poll-card {
+  background: rgba(255, 255, 255, 0.05); /* Glass effect */
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.dashboard__pollCard:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+.dashboard-poll-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.pollCard__header {
+.poll-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.pollCard__type {
-  background-color: #e0e7ff; /* Light indigo */
-  color: var(--primary-color);
+.poll-card-type {
+  background-color: rgba(79, 70, 229, 0.2); 
+  color: #818cf8;
   padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 1px;
 }
 
-.pollCard__author {
+.poll-card-author {
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: #9ca3af;
 }
 
-.pollCard__question {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--text-main);
+.poll-card-question {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #f3f4f6;
   margin: 0 0 1.5rem 0;
-  line-height: 1.4;
-  flex-grow: 1; /* Pushes the button to the bottom if card heights vary */
+  line-height: 1.5;
 }
 
-/* View Poll Button */
-.pollCard__viewBtn {
-  background-color: var(--primary-color);
+/* Action Button */
+.poll-card-btn {
+  background-color: #4f46e5;
   color: #ffffff;
   border: none;
   padding: 0.75rem 1rem;
@@ -134,30 +125,8 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   width: 100%;
-  text-align: center;
 }
 
-.pollCard__viewBtn:hover {
-  background-color: var(--primary-hover);
-}
-
-/* Responsive Design for Mobile Devices */
-@media (max-width: 768px) {
-  .dashboard {
-    flex-direction: column; /* Stacks sidebar on top of main content on small screens */
-  }
-
-  .dashboard__main {
-    padding: 1.5rem 1rem;
-  }
-
-  .dashboard__header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .dashboard__pollList {
-    grid-template-columns: 1fr; /* 1 column on mobile */
-  }
+.poll-card-btn:hover {
+  background-color: #4338ca;
 }
