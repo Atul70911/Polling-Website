@@ -25,8 +25,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-layout">
-      {/* 1. Left Column */}
-      <SideBar />
+      
 
       {/* 2. Middle Column (The Feed) */}
       <main className="dashboard-main">
@@ -63,8 +62,7 @@ export default function Dashboard() {
         </section>
       </main>
 
-      {/* 3. Right Column */}
-      <UserInfo />
+     
     </div>
   );
 }
