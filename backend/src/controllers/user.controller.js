@@ -219,5 +219,4 @@ export { registerUser,
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,
-    getCurrentUser,
     updateAccountDetails}
