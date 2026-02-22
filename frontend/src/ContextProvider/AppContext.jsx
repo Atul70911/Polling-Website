@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, useState, useEffect } from "react";
 import profilePic from "../assets/profile-pic.jpg";
 
-import { pingApi, loginApi, registerApi, logoutApi } from "../api/user.api";
+import { loginApi, registerApi, logoutApi } from "../api/user.api";
 import { getFeedApi } from "../api/polls.api";
 
 const AppContext = createContext(null);
@@ -100,9 +100,7 @@ export function AppProvider({ children }) {
   };
 
   // run once
-  useEffect(() => {
-    pingApi().catch(() => {});
-  }, []);
+ 
 
   const value = useMemo(
     () => ({
