@@ -2,7 +2,7 @@ import React, { createContext, useContext, useMemo, useState, useEffect } from "
 import profilePic from "../assets/profile-pic.jpg";
 
 import { loginApi, registerApi, logoutApi } from "../api/user.api";
-import { getFeedApi,createPollApi } from "../api/polls.api";
+import { getFeedApi, createPollApi } from "../api/polls.api";
 
 const AppContext = createContext(null);
 
@@ -36,7 +36,15 @@ export function AppProvider({ children }) {
     setError("");
     try {
       const res = await loginApi({ email, password });
+      
       const loggedInUser = res?.data?.data?.user;
+      const accessToken = res?.data?.data?.accessToken; // ✅ 1. Extract token
+
+      // ✅ 2. Save token securely in localStorage so Axios can use it
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+      }
+
       setUser(loggedInUser || null);
       
       return res.data;
@@ -68,8 +76,23 @@ export function AppProvider({ children }) {
     setError("");
     try {
       await logoutApi();
+    } catch (e) {
+      console.error("Logout API failed, but clearing local session anyway");
+    } finally {
+      // ✅ 3. Always clear token and user on logout
+      localStorage.removeItem("accessToken");
       setUser(null);
       setPage("Login");
+      setLoading(false);
+    }
+  };
+
+  const createPoll = async (payload) => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await createPollApi(payload);
+      return res.data;
     } catch (e) {
       setError(getErrMsg(e));
       throw e;
@@ -77,19 +100,6 @@ export function AppProvider({ children }) {
       setLoading(false);
     }
   };
-  const createPoll = async (payload) => {
-  setLoading(true);
-  setError("");
-  try {
-    const res = await createPollApi(payload);
-    return res.data;
-  } catch (e) {
-    setError(getErrMsg(e));
-    throw e;
-  } finally {
-    setLoading(false);
-  }
-};
 
   const fetchFeed = async ({ page = 1, limit = 50, type } = {}) => {
     setLoading(true);
@@ -112,12 +122,8 @@ export function AppProvider({ children }) {
     }
   };
 
-  // run once
- 
-
   const value = useMemo(
     () => ({
-      // state
       page, setPage,
       name, setName,
       userName, setUserName,
@@ -126,14 +132,13 @@ export function AppProvider({ children }) {
       user, setUser,
 
       yesNoList, setYesNoList,
-ratingList, setRatingList,
-singleChoiceList, setSingleChoiceList,
-imageBasedList, setImageBasedList,
+      ratingList, setRatingList,
+      singleChoiceList, setSingleChoiceList,
+      imageBasedList, setImageBasedList,
 
       loading,
       error, setError,
 
-      // actions
       login,
       register,
       logout,
