@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 //routes imports
 import userRouter from "./routes/user.routes.js"
-import pollRoutes from "./src/routes/poll.routes.js"
+import pollRoutes from "./routes/poll.routes.js"
 
 //routes declarations
  app.use("/api/v1/users",userRouter);

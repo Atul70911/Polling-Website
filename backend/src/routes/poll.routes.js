@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { VerifyJWT } from "../middlewares/auth.middleware.js";
 import { validateObjectId } from "../middlewares/validateObjectId.middleware.js";
 
 import {
@@ -17,16 +17,18 @@ const router = Router();
 
 // public
 router.get("/", getPollFeed);
+
+// auth required (put static paths BEFORE "/:pollId")
+router.get("/me/list", VerifyJWT, getMyPolls);
+router.post("/", VerifyJWT, createPoll);
+
+router.post("/:pollId/vote", VerifyJWT, validateObjectId("pollId"), voteOnPoll);
+router.post("/:pollId/bookmark", VerifyJWT, validateObjectId("pollId"), toggleBookmark);
+
+router.patch("/:pollId/close", VerifyJWT, validateObjectId("pollId"), closePoll);
+router.delete("/:pollId", VerifyJWT, validateObjectId("pollId"), deletePoll);
+
+// public (dynamic path last)
 router.get("/:pollId", validateObjectId("pollId"), getPollById);
-
-// auth required
-router.post("/", verifyJWT, createPoll);
-router.get("/me/list", verifyJWT, getMyPolls);
-
-router.post("/:pollId/vote", verifyJWT, validateObjectId("pollId"), voteOnPoll);
-router.post("/:pollId/bookmark", verifyJWT, validateObjectId("pollId"), toggleBookmark);
-
-router.patch("/:pollId/close", verifyJWT, validateObjectId("pollId"), closePoll);
-router.delete("/:pollId", verifyJWT, validateObjectId("pollId"), deletePoll);
 
 export default router;
