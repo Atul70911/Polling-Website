@@ -1,25 +1,39 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
-const app=express();
+import userRouter from "./routes/user.routes.js";
+import pollRoutes from "./routes/poll.routes.js";
 
-app.use(cors({
-    origin:process.env.CORS_ORIGIN,
-    credentials:true
-}));
-app.use(express.json({limit: "16kb"}));
-app.use(express.urlencoded({extended:true,limit:"16kb"}));
+const app = express();
+
+const corsOptions = {
+  origin: "http://localhost:5173", // must be exact origin (no path)
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+// ✅ Apply CORS to ALL requests
+app.use(cors(corsOptions));
+
+// ✅ Handle preflight for ALL routes
+app.options(/.*/, cors(corsOptions));
+
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-//routes imports
-import userRouter from "./routes/user.routes.js"
-import pollRoutes from "./routes/poll.routes.js"
+// ✅ Routes
+// Choose ONE and match frontend calls:
 
-//routes declarations
- app.use("/api/v1/users",userRouter);
- app.use("/api/v1/polls", pollRoutes);
+// Option A (recommended): singular "/user"
+app.use("/api/v1/user", userRouter);
 
+// Option B: plural "/users"
+// app.use("/api/v1/users", userRouter);
 
-export {app};
+app.use("/api/v1/polls", pollRoutes);
+
+export { app };

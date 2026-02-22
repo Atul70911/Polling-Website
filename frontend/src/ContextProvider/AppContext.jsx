@@ -2,7 +2,7 @@ import React, { createContext, useContext, useMemo, useState, useEffect } from "
 import profilePic from "../assets/profile-pic.jpg";
 
 import { loginApi, registerApi, logoutApi } from "../api/user.api";
-import { getFeedApi } from "../api/polls.api";
+import { getFeedApi,createPollApi } from "../api/polls.api";
 
 const AppContext = createContext(null);
 
@@ -77,6 +77,19 @@ export function AppProvider({ children }) {
       setLoading(false);
     }
   };
+  const createPoll = async (payload) => {
+  setLoading(true);
+  setError("");
+  try {
+    const res = await createPollApi(payload);
+    return res.data;
+  } catch (e) {
+    setError(getErrMsg(e));
+    throw e;
+  } finally {
+    setLoading(false);
+  }
+};
 
   const fetchFeed = async ({ page = 1, limit = 50, type } = {}) => {
     setLoading(true);
@@ -112,7 +125,10 @@ export function AppProvider({ children }) {
       src, setSrc,
       user, setUser,
 
-      yesNoList, ratingList, singleChoiceList, imageBasedList,
+      yesNoList, setYesNoList,
+ratingList, setRatingList,
+singleChoiceList, setSingleChoiceList,
+imageBasedList, setImageBasedList,
 
       loading,
       error, setError,
@@ -122,11 +138,12 @@ export function AppProvider({ children }) {
       register,
       logout,
       fetchFeed,
+      createPoll, 
     }),
     [
       page, name, userName, email, src, user,
       yesNoList, ratingList, singleChoiceList, imageBasedList,
-      loading, error
+      loading, error,
     ]
   );
 

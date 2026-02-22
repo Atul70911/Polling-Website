@@ -3,91 +3,45 @@ import OptionAdder from "./OptionAdder";
 import "../style/CreatePoll.css";
 import { useApp } from "../ContextProvider/AppContext";
 
-const initialYesNo = { type: "YesNo", id: 0, question: "", yes: 0, no: 0 };
-const initialRating = { type: "Rating", id: 0, question: "", rating: 0 };
-const initialSingleChoice = {
-  type: "SingleChoice",
-  id: 0,
-  question: "",
-  options: [],
-};
-const initialImageBased = {
-  type: "ImageBased",
-  id: 0,
-  question: "",
-  options: [],
-};
-
 const CreatePoll = () => {
-  // form state (local)
   const [type, setType] = useState("");
   const [question, setQuestion] = useState("");
   const [quesOptions, setQuesOptions] = useState([""]);
 
-  // global poll lists (context)
-  const {
-    setYesNoList,
-    setRatingList,
-    setSingleChoiceList,
-    setImageBasedList,
-  } = useApp();
+  const { createPoll, fetchFeed, loading, error, setError } = useApp();
 
   const handleChoiceClick = (t) => {
     setType(t);
-
-    
-    if (t === "SingleChoice" || t === "ImageBased") setQuesOptions([""]);
-    else setQuesOptions([""]); 
+    setQuesOptions([""]);
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
+    setError?.("");
+
     if (!type) return;
     if (!question.trim()) return;
 
-    const id = Date.now();
+    // Build payload expected by backend
+    let payload = { type, question: question.trim() };
 
-    if (type === "YesNo") {
-      const poll = { ...initialYesNo, id, question, yes: 0, no: 0 };
-      setYesNoList((prev) => [...prev, poll]);
-      setType("");
-      setQuestion("");
-      return;
+    if (type === "SingleChoice" || type === "ImageBased") {
+      const options = quesOptions.map((o) => String(o || "").trim()).filter(Boolean);
+      if (options.length < 2) {
+        setError?.("At least 2 options are required");
+        return;
+      }
+      payload.options = options; // backend should map these to schema
     }
 
-    if (type === "Rating") {
-      const poll = { ...initialRating, id, question, rating: 0 };
-      setRatingList((prev) => [...prev, poll]);
-      setType("");
-      setQuestion("");
-      return;
-    }
-
-    if (type === "SingleChoice") {
-      const poll = {
-        ...initialSingleChoice,
-        id,
-        question,
-        options: quesOptions,
-      };
-      setSingleChoiceList((prev) => [...prev, poll]);
+    try {
+      await createPoll(payload);   // ✅ POST /polls
+      await fetchFeed();           // ✅ reload from DB
       setType("");
       setQuestion("");
       setQuesOptions([""]);
-      return;
-    }
-
-    if (type === "ImageBased") {
-      const poll = {
-        ...initialImageBased,
-        id,
-        question,
-        options: quesOptions, // array of text OR blob URLs (based on OptionAdder inputType)
-      };
-      setImageBasedList((prev) => [...prev, poll]);
-      setType("");
-      setQuestion("");
-      setQuesOptions([""]);
-      return;
+    } catch (e) {
+      // error already set by context, but you can log
+      console.error(e);
     }
   };
 
@@ -110,35 +64,23 @@ const CreatePoll = () => {
         <h4 className="createPoll__label">Poll Type</h4>
 
         <div className="createPoll__typeRow">
-          <button
-            className={`createPoll__typeBtn ${type === "YesNo" ? "isActive" : ""}`}
-            type="button"
-            onClick={() => handleChoiceClick("YesNo")}
-          >
+          <button type="button" onClick={() => handleChoiceClick("YesNo")}
+            className={`createPoll__typeBtn ${type === "YesNo" ? "isActive" : ""}`}>
             Yes/No
           </button>
 
-          <button
-            className={`createPoll__typeBtn ${type === "SingleChoice" ? "isActive" : ""}`}
-            type="button"
-            onClick={() => handleChoiceClick("SingleChoice")}
-          >
+          <button type="button" onClick={() => handleChoiceClick("SingleChoice")}
+            className={`createPoll__typeBtn ${type === "SingleChoice" ? "isActive" : ""}`}>
             Single Choice
           </button>
 
-          <button
-            className={`createPoll__typeBtn ${type === "Rating" ? "isActive" : ""}`}
-            type="button"
-            onClick={() => handleChoiceClick("Rating")}
-          >
+          <button type="button" onClick={() => handleChoiceClick("Rating")}
+            className={`createPoll__typeBtn ${type === "Rating" ? "isActive" : ""}`}>
             Rating
           </button>
 
-          <button
-            className={`createPoll__typeBtn ${type === "ImageBased" ? "isActive" : ""}`}
-            type="button"
-            onClick={() => handleChoiceClick("ImageBased")}
-          >
+          <button type="button" onClick={() => handleChoiceClick("ImageBased")}
+            className={`createPoll__typeBtn ${type === "ImageBased" ? "isActive" : ""}`}>
             Image Based
           </button>
         </div>
@@ -155,20 +97,23 @@ const CreatePoll = () => {
                 idx={idx}
                 val={val}
                 setQuesOptions={setQuesOptions}
-                inputType={type === "ImageBased" ? "file" : "text"}
+                inputType="text"  // ✅ for ImageBased, enter image URL strings
               />
             ))}
           </div>
         </div>
       )}
 
+      {error && <p className="createPoll__error">{error}</p>}
+
       <div className="createPoll__actions">
         <button
           className="createPoll__createBtn"
           type="button"
           onClick={handleCreate}
+          disabled={loading}
         >
-          Create
+          {loading ? "Creating..." : "Create"}
         </button>
       </div>
     </div>
