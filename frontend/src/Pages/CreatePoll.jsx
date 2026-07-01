@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import OptionAdder from "./OptionAdder";
+import OptionAdder from "../Components/OptionAdder";
 import "../style/CreatePoll.css";
 import { useApp } from "../ContextProvider/AppContext";
 

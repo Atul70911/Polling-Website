@@ -17,7 +17,7 @@ const SideBar = () => {
   const { setPage } = useApp();
   return (
     <aside className="sidebar">
-      <div className="sidebar__title">Polling Project</div>
+      <div className="sidebar__title">VoxPopuli</div>
 
       <nav className="sidebar__nav">
         <button className="sidebar__item" onClick={()=>{setPage('DashBoard')}}>

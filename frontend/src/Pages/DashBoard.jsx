@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SideBar from "./SideBar";
+import SideBar from "../Components/SideBar";
 import UserInfo from "./UserInfo";
 import { useApp } from "../ContextProvider/AppContext";
 import "../style/Dashboard.css";
