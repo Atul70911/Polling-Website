@@ -184,7 +184,7 @@ export const voteOnPoll = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Invalid optionIndex");
     }
 
-    updated = await Poll.findOneAndUpdate(
+    updated = await SingleChoicePoll.findOneAndUpdate(
       { _id: pollId, closed: false, voters: { $ne: userId } },
       {
         $addToSet: { voters: userId },

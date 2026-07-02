@@ -2,7 +2,7 @@ import React, { createContext, useContext, useMemo, useState, useEffect } from "
 import profilePic from "../assets/profile-pic.jpg";
 
 import { loginApi, registerApi, logoutApi } from "../api/user.api";
-import { getFeedApi, createPollApi } from "../api/polls.api";
+import { getFeedApi, createPollApi,getPollApi,voteApi,bookmarkApi } from "../api/polls.api";
 
 const AppContext = createContext(null);
 
@@ -29,6 +29,7 @@ export function AppProvider({ children }) {
   const [ratingList, setRatingList] = useState([]);
   const [singleChoiceList, setSingleChoiceList] = useState([]);
   const [imageBasedList, setImageBasedList] = useState([]);
+  const [selectedPoll, setSelectedPoll] = useState(null);
 
   // actions
   const login = async (email, password) => {
@@ -122,6 +123,50 @@ export function AppProvider({ children }) {
     }
   };
 
+  const fetchPoll = async (pollId) => {
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await getPollApi(pollId);
+    const poll = res?.data?.data;
+
+    return poll;
+  } catch (e) {
+    setError(getErrMsg(e));
+    throw e;
+  } finally {
+    setLoading(false);
+  }
+};
+
+const submitVote = async (pollId, payload) => {
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await voteApi(pollId, payload);
+
+    return res?.data;
+  } catch (e) {
+    setError(getErrMsg(e));
+    throw e;
+  } finally {
+    setLoading(false);
+  }
+};
+
+const toggleBookmark = async (pollId) => {
+  try {
+    const res = await bookmarkApi(pollId);
+    return res?.data;
+  } catch (e) {
+    throw e;
+  }
+};
+
+
+
   const value = useMemo(
     () => ({
       page, setPage,
@@ -138,17 +183,20 @@ export function AppProvider({ children }) {
 
       loading,
       error, setError,
+      selectedPoll, setSelectedPoll,
 
       login,
       register,
       logout,
       fetchFeed,
       createPoll, 
+      fetchPoll,submitVote,
+      getErrMsg,toggleBookmark
     }),
     [
       page, name, userName, email, src, user,
       yesNoList, ratingList, singleChoiceList, imageBasedList,
-      loading, error,
+      loading, error,selectedPoll,
     ]
   );
 

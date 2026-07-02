@@ -11,6 +11,8 @@ import SignUp from "./Pages/SignUp";
 import SideBar from "./Components/SideBar";
 import NavBar from "./Components/NavBar"
 import Footer from "./Components/Footer"
+import ViewPoll from "./Pages/ViewPoll";
+import LiveResults from "./Components/LiveResults";
 
 
 import { useApp } from "./ContextProvider/AppContext";
@@ -22,9 +24,10 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      <NavBar />
       {isAuth ? (
         <>
-          <NavBar />
+
           <main className="flex-1 flex items-center justify-center">
             {page === "Login" ? <Login /> : <SignUp />}
           </main>
@@ -36,17 +39,18 @@ function App() {
           </div>
           <main className="flex-1 p-6 overflow-y-auto">
             {page === "DashBoard" && <DashBoard />}
+            {page === "ViewPoll" && <ViewPoll />}
             {page === "CreatePoll" && <CreatePoll />}
             {page === "MyPolls" && <MyPolls />}
             {page === "VotedPolls" && <VotedPolls />}
             {page === "Bookmarks" && <Bookmarks />}
           </main>
-          <div className="w-64 shrink-0 p-4">
-            <UserInfo />
+          <div className="w-72 shrink-0 p-4 overflow-y-auto">
+            {page === "ViewPoll" ? <LiveResults /> : <UserInfo />}
           </div>
         </div>
       )}
-      <Footer/>
+      <Footer />
     </div>
   );
 }
