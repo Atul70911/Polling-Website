@@ -3,27 +3,47 @@ const pct = (val, total) =>
   total > 0 ? Math.round((val / total) * 100) : 0;
 
 
+import { extractImageUrl } from "../utils/extractImageUrl";
+
 const ImageBasedVoting = ({ options, selected, onSelect, hasVoted }) => {
   const totalVotes = options.reduce((s, o) => s + (o.votes || 0), 0);
+
   return (
     <div className="grid grid-cols-2 gap-3">
       {options.map((opt, i) => {
         const isSelected = selected === i;
-        const p = pct(opt.votes || 0, totalVotes);
+        const p = totalVotes > 0 ? Math.round(((opt.votes || 0) / totalVotes) * 100) : 0;
+        const src = extractImageUrl(opt.url);
+
         return (
           <button
             key={i}
             onClick={() => !hasVoted && onSelect(i)}
             disabled={hasVoted}
             className={`relative rounded-xl overflow-hidden border-2 transition-all aspect-video disabled:cursor-default ${
-              isSelected ? "border-blue-500 ring-2 ring-blue-300" : "border-gray-200 hover:border-gray-400"
+              isSelected
+                ? "border-blue-500 ring-2 ring-blue-300"
+                : "border-gray-200 hover:border-gray-400"
             }`}
           >
             <img
-              src={opt.url}
+              src={src}
               alt={`Option ${i + 1}`}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                // fallback to a gray placeholder with option number
+                e.target.style.display = "none";
+                e.target.nextSibling.style.display = "flex";
+              }}
             />
+            {/* Fallback shown when image fails */}
+            <div
+              className="w-full h-full bg-gray-100 items-center justify-center flex-col gap-1 text-gray-400 text-xs hidden absolute inset-0"
+            >
+              <span className="text-2xl">🖼️</span>
+              <span>Image unavailable</span>
+            </div>
+
             {hasVoted && (
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                 <span className="text-white font-bold text-xl">{p}%</span>
@@ -40,6 +60,5 @@ const ImageBasedVoting = ({ options, selected, onSelect, hasVoted }) => {
     </div>
   );
 };
-
 
 export default ImageBasedVoting;

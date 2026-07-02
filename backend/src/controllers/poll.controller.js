@@ -153,11 +153,7 @@ export const toggleBookmark = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { bookmarked: !already, poll: updated }, "Bookmark updated"));
 });
 
-/**
- * Voting:
- * - Prevent double-vote via filter: voters: { $ne: userId }
- * - Prevent voting on closed polls via filter: closed: false
- */
+
 export const voteOnPoll = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
   const { pollId } = req.params;
@@ -175,7 +171,7 @@ export const voteOnPoll = asyncHandler(async (req, res) => {
 
   let updated;
 
-  if (poll.type === "SingleChoice" || poll.type === "ImageBased") {
+  if (poll.type === "SingleChoice") {
     const { optionIndex } = req.body;
     const idx = Number(optionIndex);
 
@@ -186,10 +182,24 @@ export const voteOnPoll = asyncHandler(async (req, res) => {
 
     updated = await SingleChoicePoll.findOneAndUpdate(
       { _id: pollId, closed: false, voters: { $ne: userId } },
-      {
-        $addToSet: { voters: userId },
-        $inc: { [`options.${idx}.votes`]: 1 }
-      },
+      { $addToSet: { voters: userId }, $inc: { [`options.${idx}.votes`]: 1 } },
+      { new: true }
+    ).lean();
+  }
+
+  if (poll.type === "ImageBased") {
+    const { optionIndex } = req.body;
+    const idx = Number(optionIndex);
+
+    if (!Number.isInteger(idx)) throw new ApiError(400, "optionIndex is required");
+    if (!Array.isArray(poll.options) || idx < 0 || idx >= poll.options.length) {
+      throw new ApiError(400, "Invalid optionIndex");
+    }
+
+    // ✅ base Poll model — ImageBasedPoll discriminator won't find doc with SingleChoicePoll
+    updated = await Poll.findOneAndUpdate(
+      { _id: pollId, closed: false, voters: { $ne: userId } },
+      { $addToSet: { voters: userId }, $inc: { [`options.${idx}.votes`]: 1 } },
       { new: true }
     ).lean();
   }
@@ -221,3 +231,38 @@ export const voteOnPoll = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, updated, "Vote recorded"));
 });
+
+export const getBookmarkedPolls = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) throw new ApiError(401, "Unauthorized");
+
+  const polls = await Poll.find({ bookmarkedBy: userId })
+    .sort({ createdAt: -1 })
+    .populate("creator", "name username profilePicture")
+    .lean();
+
+  return res.status(200).json(new ApiResponse(200, polls, "Bookmarked polls"));
+});
+
+export const getVotedPolls = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) throw new ApiError(401, "Unauthorized");
+  const polls = await Poll.find({ voters: userId })
+    .sort({ createdAt: -1 })
+    .populate("creator", "name username profilePicture")
+    .lean();
+
+  return res.status(200).json(new ApiResponse(200, polls, "Voted polls"));
+
+})
+
+export const getCreatedPolls = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) throw new ApiError(401, "Unauthorized");
+  const polls = await Poll.find({ creator: userId })
+    .sort({ createdAt: -1 })
+    .populate("creator", "name username profilePicture")
+    .lean();
+
+  return res.status(200).json(new ApiResponse(200, polls, "Created polls"));
+})

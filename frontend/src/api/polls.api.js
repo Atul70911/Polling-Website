@@ -9,3 +9,6 @@ export const voteApi = (pollId, payload) => api.post(`/polls/${pollId}/vote`, pa
 export const bookmarkApi = (pollId) => api.post(`/polls/${pollId}/bookmark`);
 export const closePollApi = (pollId) => api.patch(`/polls/${pollId}/close`);
 export const deletePollApi = (pollId) => api.delete(`/polls/${pollId}`);
+export const getBookmarksApi = () => api.get("/polls/me/bookmarks");
+export const getVotedApi = () => api.get("/polls/me/voted");
+export const getCreatedApi = () => api.get("/polls/me/created");

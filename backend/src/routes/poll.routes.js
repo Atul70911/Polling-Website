@@ -10,7 +10,10 @@ import {
   voteOnPoll,
   closePoll,
   deletePoll,
-  toggleBookmark
+  toggleBookmark,
+  getBookmarkedPolls,
+  getVotedPolls,
+  getCreatedPolls
 } from "../controllers/poll.controller.js";
 
 const router = Router();
@@ -24,6 +27,9 @@ router.post("/", VerifyJWT, createPoll);
 
 router.post("/:pollId/vote", VerifyJWT, validateObjectId("pollId"), voteOnPoll);
 router.post("/:pollId/bookmark", VerifyJWT, validateObjectId("pollId"), toggleBookmark);
+router.get("/me/bookmarks", VerifyJWT, getBookmarkedPolls);
+router.get("/me/voted", VerifyJWT, getVotedPolls);
+router.get("/me/created", VerifyJWT, getCreatedPolls);
 
 router.patch("/:pollId/close", VerifyJWT, validateObjectId("pollId"), closePoll);
 router.delete("/:pollId", VerifyJWT, validateObjectId("pollId"), deletePoll);

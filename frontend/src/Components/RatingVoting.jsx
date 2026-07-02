@@ -1,4 +1,6 @@
 import { Star } from "lucide-react";
+import { useState } from "react";
+
 
 const pct = (val, total) =>
   total > 0 ? Math.round((val / total) * 100) : 0;
